@@ -1,0 +1,20 @@
+[
+{
+  "modid": "ZerzeraRE",
+  "name": "",
+  "description": "",
+  "version": "@VERSION@",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [
+    "Zerzera"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]
