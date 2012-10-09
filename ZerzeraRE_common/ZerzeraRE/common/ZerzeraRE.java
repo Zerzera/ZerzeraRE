@@ -17,6 +17,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
 import ZerzeraRE.common.core.CommonProxy;
 import ZerzeraRE.common.core.ConfigurationSettings;
@@ -46,21 +47,6 @@ public class ZerzeraRE {
 	@PostInit
 	public void postInit(FMLPostInitializationEvent event) {}
 	
-	@Init
-	public void load(FMLInitializationEvent event) {
-		
-		// -- Register modded blocks
-		ModBlocks.init();
-		
-		// -- Preload textures and renderers (Client only)
-		ZerzeraRE.proxy.initRendering();
-		
-		// -- Register TileEntity
-		ZerzeraRE.proxy.initRenderBlocks();
-
-		
-	}
-
 	@PreInit
 	public void initialize(FMLPreInitializationEvent evt) {
 		Version.versionCheck();
@@ -74,9 +60,9 @@ public class ZerzeraRE {
 		{
 			REConf.load();
 
-			Property REbenchId = REConf.getOrCreateBlockIdProperty("re_bench.id", DefaultProps.RE_BENCH_ID);	
+			/*
+			Property REbenchId = REConf.getBlock("re_bench.id", DefaultProps.RE_BENCH_ID);
 			
-/*
 			Property modifyWorld = REConf.getOrCreateBooleanProperty("modifyWorld", Configuration.CATEGORY_GENERAL, true);
 			modifyWorld.comment = "set to false if you don't want the world to be modified";
 
@@ -89,6 +75,24 @@ public class ZerzeraRE {
 		}
 		
 	}
+	
+	@Init
+	public void load(FMLInitializationEvent event) {
+		
+		// -- Register modded blocks
+		ModBlocks.init();
+		
+		// -- Preload textures and renderers (Client only)
+		ZerzeraRE.proxy.initRendering();
+		
+		// -- Register TileEntity
+		ZerzeraRE.proxy.initRenderBlocks();
+		
+		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
+
+		
+	}
+
 	
 	
 }

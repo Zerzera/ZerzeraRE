@@ -4,9 +4,9 @@ import net.minecraftforge.client.MinecraftForgeClient;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
+import ZerzeraRE.client.render.RenderREbench;
 import ZerzeraRE.common.lib.DefaultProps;
 import ZerzeraRE.common.core.CommonProxy;
-import ZerzeraRE.render.RenderREbench;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -23,6 +23,5 @@ public class ClientProxy extends CommonProxy {
     	
 		RenderingRegistry.registerBlockHandler( DefaultProps.RENDER_RE_BENCH_ID, new RenderREbench() );
 		
-//    	ClientRegistry.bindTileEntitySpecialRenderer(TileREbench.class, new RenderREbench());
     }
 }

@@ -1,4 +1,4 @@
-package ZerzeraRE.render;
+package ZerzeraRE.client.render;
 
 import java.util.logging.Logger;
 

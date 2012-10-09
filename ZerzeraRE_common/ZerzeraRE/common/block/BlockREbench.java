@@ -22,8 +22,8 @@ import ZerzeraRE.common.ZerzeraRE;
 import ZerzeraRE.common.lib.DefaultProps;
 
 public class BlockREbench extends ModdedBlock {
-	static int 		REbenchId 			= ZerzeraRE.REConf.getOrCreateIntProperty("re_bench.id",    Configuration.CATEGORY_ITEM, DefaultProps.RE_BENCH_ID    ).getInt();
-	static Property blockIndexInTexture = ZerzeraRE.REConf.getOrCreateIntProperty("re_bench.gfxid", Configuration.CATEGORY_ITEM, DefaultProps.RE_BENCH_GFX_ID);
+	static int 		REbenchId 			= ZerzeraRE.REConf.getBlock( "re_bench.id", DefaultProps.RE_BENCH_ID ).getInt();
+	static int 		blockIndexInTexture = DefaultProps.RE_BENCH_GFX_ID;
 	static Logger   log					= ZerzeraRE.log;
 	
 	static int      textureBottom		= 0;
