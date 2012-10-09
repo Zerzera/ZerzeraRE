@@ -24,6 +24,7 @@ public class DefaultProps {
 
 	public static int 	 RE_BENCH_ID 		= 500;
 	public static int 	 RE_BENCH_GFX_ID 	= 0;
+	public static int 	 RE_BENCH_GUID      = 0;
 	public static String RE_BENCH_NAME 		= "RE_Bench";
 	public static String RE_BENCH_FULLNAME 	= "Reverse Engineering Bench";
 	public static int 	 RENDER_RE_BENCH_ID;

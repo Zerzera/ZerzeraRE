@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 
 import cpw.mods.fml.common.FMLLog;
@@ -18,16 +17,11 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 import ZerzeraRE.common.core.CommonProxy;
 import ZerzeraRE.common.core.ConfigurationSettings;
 import ZerzeraRE.common.core.Version;
-import ZerzeraRE.common.tile.TileREbench;
 import ZerzeraRE.common.block.ModBlocks;
-import ZerzeraRE.common.block.BlockREbench;
 import ZerzeraRE.common.lib.DefaultProps;
 import ZerzeraRE.common.network.PacketHandler;
 
@@ -43,8 +37,6 @@ public class ZerzeraRE {
 	
 	public static ConfigurationSettings REConf;
 	
-	public static BlockREbench REbench;
-
 	@Instance("ZerzeraRE")
 	public static ZerzeraRE instance;
 	
@@ -60,11 +52,12 @@ public class ZerzeraRE {
 		// -- Register modded blocks
 		ModBlocks.init();
 		
-		// -- Register TileEntity
-		ZerzeraRE.proxy.initTileEntities();
-
 		// -- Preload textures and renderers (Client only)
-		ZerzeraRE.proxy.initRenderingAndTextures();
+		ZerzeraRE.proxy.initRendering();
+		
+		// -- Register TileEntity
+		ZerzeraRE.proxy.initRenderBlocks();
+
 		
 	}
 
