@@ -22,9 +22,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import ZerzeraRE.common.core.CommonProxy;
 import ZerzeraRE.common.core.ConfigurationSettings;
 import ZerzeraRE.common.core.Version;
+import ZerzeraRE.common.core.handlers.PacketHandler;
 import ZerzeraRE.common.block.ModBlocks;
 import ZerzeraRE.common.lib.DefaultProps;
-import ZerzeraRE.common.network.PacketHandler;
 
 @Mod(modid=DefaultProps.MOD_ID, version=Version.VERSION, useMetadata = false, name=DefaultProps.FULL_MOD_NAME)
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, channels={DefaultProps.NET_CHANNEL_NAME}, packetHandler = PacketHandler.class)
@@ -60,9 +60,9 @@ public class ZerzeraRE {
 		{
 			REConf.load();
 
-			/*
 			Property REbenchId = REConf.getBlock("re_bench.id", DefaultProps.RE_BENCH_ID);
-			
+			DefaultProps.RE_BENCH_ID = REbenchId.getInt();
+			/*
 			Property modifyWorld = REConf.getOrCreateBooleanProperty("modifyWorld", Configuration.CATEGORY_GENERAL, true);
 			modifyWorld.comment = "set to false if you don't want the world to be modified";
 
@@ -79,20 +79,21 @@ public class ZerzeraRE {
 	@Init
 	public void load(FMLInitializationEvent event) {
 		
+		// Register the GUI Handler
+        NetworkRegistry.instance().registerGuiHandler(instance, proxy);
+        
 		// -- Register modded blocks
 		ModBlocks.init();
 		
 		// -- Preload textures and renderers (Client only)
-		ZerzeraRE.proxy.initRendering();
+		proxy.initRendering();
 		
 		// -- Register TileEntity
-		ZerzeraRE.proxy.initRenderBlocks();
+		proxy.initializeTileEntities();
 		
-		NetworkRegistry.instance().registerGuiHandler(instance, proxy);
-
+		// -- Register Renderer for Blocks
+		proxy.initRenderBlocks();
 		
 	}
-
-	
 	
 }

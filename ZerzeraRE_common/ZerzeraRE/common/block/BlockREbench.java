@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EntityLiving;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.Material;
 import net.minecraft.src.MathHelper;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.Configuration;
 
 import ZerzeraRE.common.ZerzeraRE;
 import ZerzeraRE.common.lib.DefaultProps;
+import ZerzeraRE.common.tile.TileREbench;
 
 public class BlockREbench extends ModdedBlock {
 	static int 		REbenchId 			= ZerzeraRE.REConf.getBlock( "re_bench.id", DefaultProps.RE_BENCH_ID ).getInt();
@@ -31,7 +33,7 @@ public class BlockREbench extends ModdedBlock {
 	static int      textureSide			= 0 + 2;
 	static int      textureBack			= 1 + 2;
 	static int      textureFront		= 16;
-	
+
 	public BlockREbench () {
 		super( REbenchId , Material.iron);
 		
@@ -64,6 +66,27 @@ public class BlockREbench extends ModdedBlock {
 		world.setBlockMetadataWithNotify(x, y, z, f );
 	}
 	
+	
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int iFaceActivated, float facingX, float facingY, float facingZ) {
+		// TODO Auto-generated method stub
+		super.onBlockActivated(world, x, y, z, entityplayer, iFaceActivated, facingX, facingY, facingZ);
+		
+		TileREbench tileREbench = (TileREbench) world.getBlockTileEntity(x, y, z);
+		
+		if( tileREbench != null)
+		{
+			entityplayer.openGui(ZerzeraRE.instance, this.GUID , world, x, y, z);
+		}
+		else
+		{
+			ZerzeraRE.instance.log.info("Something went wrong!");
+		}
+		
+		return true;
+	}
+
+
 	@Override
 	public void updateBlockMetadata(World world, int x, int y, int z, int sidePlacedAgainst, float par6, float par7, float par8) {
 		super.updateBlockMetadata(world, x, y, z, sidePlacedAgainst, par6, par7, par8);
@@ -156,5 +179,7 @@ public class BlockREbench extends ModdedBlock {
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World world) { return null; }
+	public TileEntity createNewTileEntity(World world) { 
+		return new TileREbench();
+	}
 }

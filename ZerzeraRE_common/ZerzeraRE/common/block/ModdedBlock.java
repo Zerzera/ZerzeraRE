@@ -31,26 +31,22 @@ public abstract class ModdedBlock extends BlockContainer {
         {
             return true;
         }
+		
 		if(this.GUID == -1)
 	    {
             return true;
         }
+		
 		// Suppress if player is sneaking, so you can still place a block
 		if ( entityplayer.isSneaking() )
 		{
 			return false;
 		}
 		
-		super.onBlockActivated(world, x, y, z, entityplayer, iFaceActivated, facingX, facingY, facingZ);
-		
-		// Suppress if player is sneaking, so you can still place a block
-		if ( entityplayer.isSneaking() ) return false;
+//		super.onBlockActivated(world, x, y, z, entityplayer, iFaceActivated, facingX, facingY, facingZ);
 
-		Logger log = ClientProxy.proxy.log;
-		if(this.GUID != -1)
-		{
-			entityplayer.openGui(ZerzeraRE.instance, this.GUID , world, x, y, z);
-		}
+//		Logger log = ClientProxy.proxy.log;
+		
 		return true;
 	}
 
