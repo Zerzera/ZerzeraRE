@@ -8,7 +8,6 @@ public abstract class ModBlocks {
 
 	public static void init(){
 		// -- Registry
-		GameRegistry.registerBlock( new BlockREbench() );
-		
+		GameRegistry.registerBlock( new BlockREbench(false) );
 	}
 }

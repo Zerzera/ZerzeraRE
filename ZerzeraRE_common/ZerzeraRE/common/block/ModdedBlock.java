@@ -27,25 +27,9 @@ public abstract class ModdedBlock extends BlockContainer {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int iFaceActivated, float facingX, float facingY, float facingZ) {
-		if (world.isRemote)
-        {
-            return true;
-        }
-		
-		if(this.GUID == -1)
-	    {
-            return true;
-        }
-		
-		// Suppress if player is sneaking, so you can still place a block
-		if ( entityplayer.isSneaking() )
-		{
-			return false;
-		}
-		
-//		super.onBlockActivated(world, x, y, z, entityplayer, iFaceActivated, facingX, facingY, facingZ);
-
-//		Logger log = ClientProxy.proxy.log;
+		if (world.isRemote)return true;
+		if(this.GUID == -1)return true;
+		if ( entityplayer.isSneaking() )return false;// Suppress if player is sneaking, so you can still place a block
 		
 		return true;
 	}

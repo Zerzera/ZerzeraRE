@@ -2,6 +2,7 @@ package ZerzeraRE.common.block;
 
 import java.util.logging.Logger;
 
+import net.minecraft.src.Block;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EntityLiving;
 import net.minecraft.src.EntityPlayer;
@@ -24,6 +25,9 @@ import ZerzeraRE.common.lib.DefaultProps;
 import ZerzeraRE.common.tile.TileREbench;
 
 public class BlockREbench extends ModdedBlock {
+	private final boolean isActive;
+	private static boolean keepInventory = false;
+	
 	static int 		REbenchId 			= ZerzeraRE.REConf.getBlock( "re_bench.id", DefaultProps.RE_BENCH_ID ).getInt();
 	static int 		blockIndexInTexture = DefaultProps.RE_BENCH_GFX_ID;
 	static Logger   log					= ZerzeraRE.log;
@@ -34,9 +38,9 @@ public class BlockREbench extends ModdedBlock {
 	static int      textureBack			= 1 + 2;
 	static int      textureFront		= 16;
 
-	public BlockREbench () {
+	protected BlockREbench (boolean active) {
 		super( REbenchId , Material.iron);
-		
+		this.isActive	 = active;
 		this.textureFile = DefaultProps.TEXTURE_BLOCKS;
 		this.GUID        = DefaultProps.RE_BENCH_GUID;
 		
@@ -58,6 +62,22 @@ public class BlockREbench extends ModdedBlock {
     }
 	
 	@Override
+	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
+		return true; 
+	}
+
+	@Override
+	public boolean canPlaceTorchOnTop(World world, int x, int y, int z) {
+		return true;
+	}
+	
+
+	@Override
+	public boolean isBlockSolid(IBlockAccess par1iBlockAccess, int par2, int par3, int par4, int par5) {
+		return true;
+	}
+
+	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving) {
 		super.onBlockPlacedBy(world, x, y, z, entityliving);
 		
@@ -65,12 +85,12 @@ public class BlockREbench extends ModdedBlock {
 		int f = MathHelper.floor_double( (double) ( entityliving.rotationYaw * 4.0F / 360.0F )  + 0.5D) & 3 ;
 		world.setBlockMetadataWithNotify(x, y, z, f );
 	}
-	
-	
+		
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int iFaceActivated, float facingX, float facingY, float facingZ) {
-		// TODO Auto-generated method stub
-		super.onBlockActivated(world, x, y, z, entityplayer, iFaceActivated, facingX, facingY, facingZ);
+		if (world.isRemote) return true;
+		if(this.GUID == -1) return true;
+		if ( entityplayer.isSneaking() ) return false; // Suppress if player is sneaking, so you can still place a block
 		
 		TileREbench tileREbench = (TileREbench) world.getBlockTileEntity(x, y, z);
 		
@@ -78,14 +98,8 @@ public class BlockREbench extends ModdedBlock {
 		{
 			entityplayer.openGui(ZerzeraRE.instance, this.GUID , world, x, y, z);
 		}
-		else
-		{
-			ZerzeraRE.instance.log.info("Something went wrong!");
-		}
-		
 		return true;
 	}
-
 
 	@Override
 	public void updateBlockMetadata(World world, int x, int y, int z, int sidePlacedAgainst, float par6, float par7, float par8) {
@@ -181,5 +195,11 @@ public class BlockREbench extends ModdedBlock {
 	@Override
 	public TileEntity createNewTileEntity(World world) { 
 		return new TileREbench();
+	}
+
+	public static void updateBlockState(boolean active, World world, int x, int y, int z) {
+        int subId = world.getBlockMetadata(x, y, z);
+        TileEntity rebench = world.getBlockTileEntity(x, y, z);
+        world.setBlockMetadataWithNotify(x, y, z, subId);
 	}
 }

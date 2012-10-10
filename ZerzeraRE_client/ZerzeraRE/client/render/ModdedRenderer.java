@@ -60,6 +60,7 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 		// -- Bottom
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, -1F, 0.0F);
+		
 		this.renderBottomFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(0));
 		tessellator.draw();
 
@@ -634,7 +635,6 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 		}
 	   
         Tessellator tessellator = Tessellator.instance;
-        
         if (this.overrideBlockTexture >= 0) obt = this.overrideBlockTexture;
 
         int offsetX = (obt & 15) << 4;
