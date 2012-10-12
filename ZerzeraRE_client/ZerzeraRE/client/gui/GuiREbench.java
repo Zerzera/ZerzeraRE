@@ -6,15 +6,10 @@ import java.util.logging.Logger;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.src.Container;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.GuiContainer;
-import net.minecraft.src.GuiStats;
 import net.minecraft.src.MathHelper;
-import net.minecraft.src.RenderItem;
 import net.minecraft.src.Tessellator;
-import net.minecraft.src.World;
-
 import ZerzeraRE.common.ZerzeraRE;
 import ZerzeraRE.common.container.ContainerREbench;
 import ZerzeraRE.common.lib.DefaultProps;
@@ -137,7 +132,7 @@ public class GuiREbench extends GuiContainer {
 	{
 		float ratio = 0.00390625F;
 		
-		double pAngle = (float) (angle % 360) * Math.PI/180;
+		double pAngle = angle % 360 * Math.PI/180;
 		int endX = startX + width;
 		int endY = startY + height;
 		int endSourceX = sourceX + width;
@@ -167,7 +162,7 @@ public class GuiREbench extends GuiContainer {
 	protected void drawRotatedRect(int startX, int startY, int endX, int endY, int color, float angle){
         int temp;
 
-        double pAngle = (float) (angle % 360) * Math.PI/180;
+        double pAngle = angle % 360 * Math.PI/180;
         double cosAngle = Math.abs( Math.cos(pAngle) );
         double sinAngle = Math.abs( Math.sin(pAngle) );
 
@@ -177,10 +172,10 @@ public class GuiREbench extends GuiContainer {
         double newX = width * sinAngle + height * cosAngle;
         double newY = width * cosAngle + height * sinAngle;;
         
-        float alpha = (float) (color >> 24 & 255) / 255.0F;
-        float red   = (float) (color >> 16 & 255) / 255.0F;
-        float green = (float) (color >> 8  & 255) / 255.0F;
-        float blue  = (float) (color       & 255) / 255.0F;
+        float alpha = (color >> 24 & 255) / 255.0F;
+        float red   = (color >> 16 & 255) / 255.0F;
+        float green = (color >> 8  & 255) / 255.0F;
+        float blue  = (color       & 255) / 255.0F;
         
         Tessellator tessellator = Tessellator.instance;
         
@@ -190,15 +185,15 @@ public class GuiREbench extends GuiContainer {
         GL11.glColor4f(red, green, blue, alpha);
         GL11.glPushMatrix();
         
-        GL11.glTranslatef( (float) startX + (width / 2 ), (float) startY + (height / 2 ) , 0.0f);
+        GL11.glTranslatef( startX + (width / 2 ), startY + (height / 2 ) , 0.0f);
         GL11.glRotatef(angle, 0, 0, 1.0f);
         
 //        tessellator.setTextureUV( guiX, guiY);
         tessellator.startDrawingQuads();
-        tessellator.addVertex((float) -(height / 2) , (float)  (width / 2), 0.0D);
-        tessellator.addVertex((float)  (height / 2) , (float)  (width / 2), 0.0D);
-        tessellator.addVertex((float)  (height / 2) , (float) -(width / 2), 0.0D);
-        tessellator.addVertex((float) -(height / 2) , (float) -(width / 2), 0.0D);
+        tessellator.addVertex(-(height / 2) , width / 2, 0.0D);
+        tessellator.addVertex(height / 2 , width / 2, 0.0D);
+        tessellator.addVertex(height / 2 , -(width / 2), 0.0D);
+        tessellator.addVertex(-(height / 2) , -(width / 2), 0.0D);
         
         tessellator.draw();
         GL11.glPopMatrix();

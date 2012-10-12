@@ -9,10 +9,8 @@ import net.minecraft.src.Container;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ICrafting;
 import net.minecraft.src.InventoryPlayer;
-import net.minecraft.src.ItemStack;
 import net.minecraft.src.Slot;
 
-import ZerzeraRE.common.ZerzeraRE;
 import ZerzeraRE.common.tile.TileREbench;
 
 public class ContainerREbench extends Container{
@@ -55,15 +53,16 @@ public class ContainerREbench extends Container{
 		Iterator iterator = this.crafters.iterator();
 		while(iterator.hasNext())
 		{
-			ICrafting subICrafting = (ICrafting)iterator.next();
+			ICrafting iCrafting = (ICrafting)iterator.next();
             if (this.lastFuelLevel != this.rebench.fuelLevel)
             {
-            	subICrafting.updateCraftingInventoryInfo(this, 0, this.rebench.fuelLevel);
+            	iCrafting.updateCraftingInventoryInfo(this, 0, this.rebench.fuelLevel);
             }
 		}
 		this.lastFuelLevel = this.rebench.fuelLevel;
 	}
 	
+	@Override
 	@SideOnly(Side.CLIENT)
     public void updateProgressBar(int slotID, int i)
     {

@@ -1,14 +1,15 @@
 package ZerzeraRE.common.tile;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
+import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
-
 import ZerzeraRE.common.ZerzeraRE;
 import ZerzeraRE.common.block.BlockREbench;
+import ZerzeraRE.common.core.helper.Recipes;
+import ZerzeraRE.common.core.helper.reRecipe;
 import ZerzeraRE.common.lib.DefaultProps;
 
 public class TileREbench extends ModdedTile implements IInventory {
@@ -135,7 +136,7 @@ public class TileREbench extends ModdedTile implements IInventory {
 					 changeInv = true;
 					 if (this.itemStack[0] != null)
 					 {
-						 --this.itemStack[0].stackSize;
+						 //--this.itemStack[0].stackSize;
 						 if(this.itemStack[0].stackSize == 0)
 						 {
                             this.itemStack[0] = this.itemStack[0].getItem().getContainerItemStack(itemStack[0]);
@@ -161,6 +162,19 @@ public class TileREbench extends ModdedTile implements IInventory {
     {
         this.itemStack[slotID] = itemStack;
 
+    	if (itemStack != null && this.worldObj.isRemote)
+		{
+    		Item item = this.itemStack[slotID].getItem();
+    		if(item != null)
+    		{
+    			
+    			reRecipe resource = Recipes.getResourcesByItem(item);
+    			if(resource != null)
+    			{
+    				
+    			}
+    		}
+		}
         if (itemStack != null && itemStack.stackSize > this.getInventoryStackLimit())
         {
         	itemStack.stackSize = this.getInventoryStackLimit();
@@ -169,7 +183,8 @@ public class TileREbench extends ModdedTile implements IInventory {
         this.onInventoryChanged();
     }
 
-    public void onInventoryChanged()
+    @Override
+	public void onInventoryChanged()
     {
         if (this.worldObj != null)
         {

@@ -3,7 +3,6 @@ package ZerzeraRE.common;
 import java.io.File;
 import java.util.logging.Logger;
 
-import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
 import cpw.mods.fml.common.FMLLog;
@@ -25,10 +24,10 @@ import ZerzeraRE.common.core.Version;
 import ZerzeraRE.common.core.handlers.PacketHandler;
 import ZerzeraRE.common.block.ModBlocks;
 import ZerzeraRE.common.lib.DefaultProps;
+import ZerzeraRE.common.core.helper.Recipes;
 
 @Mod(modid=DefaultProps.MOD_ID, version=Version.VERSION, useMetadata = false, name=DefaultProps.FULL_MOD_NAME)
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, channels={DefaultProps.NET_CHANNEL_NAME}, packetHandler = PacketHandler.class)
-
 public class ZerzeraRE {
 	
 	public static boolean debug 		= false;
@@ -44,13 +43,11 @@ public class ZerzeraRE {
 	@SidedProxy(clientSide="ZerzeraRE.client.core.ClientProxy", serverSide="ZerzeraRE.common.core.CommonProxy")
 	public static CommonProxy proxy;
 	
-	@PostInit
-	public void postInit(FMLPostInitializationEvent event) {}
 	
 	@PreInit
 	public void initialize(FMLPreInitializationEvent evt) {
 		Version.versionCheck();
-
+		log.info("@PreInit");
 		log.setParent(FMLLog.getLogger());
 		log.info("Starting " + DefaultProps.FULL_MOD_NAME + " " + Version.getVersion());
 		log.info("Copyright (c) Zerzera, 2012");
@@ -94,6 +91,11 @@ public class ZerzeraRE {
 		// -- Register Renderer for Blocks
 		proxy.initRenderBlocks();
 		
+	}
+	
+	@PostInit
+	public void postInit(FMLPostInitializationEvent event) {
+		Recipes.getInstance().init();
 	}
 	
 }

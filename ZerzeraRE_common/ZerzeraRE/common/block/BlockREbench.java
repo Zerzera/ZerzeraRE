@@ -2,7 +2,6 @@ package ZerzeraRE.common.block;
 
 import java.util.logging.Logger;
 
-import net.minecraft.src.Block;
 import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.EntityLiving;
 import net.minecraft.src.EntityPlayer;
@@ -12,14 +11,9 @@ import net.minecraft.src.MathHelper;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.Property;
-import net.minecraftforge.common.Configuration;
-
 import ZerzeraRE.common.ZerzeraRE;
 import ZerzeraRE.common.lib.DefaultProps;
 import ZerzeraRE.common.tile.TileREbench;
@@ -71,7 +65,6 @@ public class BlockREbench extends ModdedBlock {
 		return true;
 	}
 	
-
 	@Override
 	public boolean isBlockSolid(IBlockAccess par1iBlockAccess, int par2, int par3, int par4, int par5) {
 		return true;
@@ -82,11 +75,12 @@ public class BlockREbench extends ModdedBlock {
 		super.onBlockPlacedBy(world, x, y, z, entityliving);
 		
 		// -- Current direction the player is facing while placing the block ( f variable if you press F3 )
-		int f = MathHelper.floor_double( (double) ( entityliving.rotationYaw * 4.0F / 360.0F )  + 0.5D) & 3 ;
+		int f = MathHelper.floor_double( entityliving.rotationYaw * 4.0F / 360.0F  + 0.5D) & 3 ;
 		world.setBlockMetadataWithNotify(x, y, z, f );
 	}
 		
 	@Override
+	
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int iFaceActivated, float facingX, float facingY, float facingZ) {
 		if (world.isRemote) return true;
 		if(this.GUID == -1) return true;

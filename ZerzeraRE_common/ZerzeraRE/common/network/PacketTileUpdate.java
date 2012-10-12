@@ -34,6 +34,7 @@ public class PacketTileUpdate extends ModdedPacket {
 		data.writeUTF(player);
 	}
 	
+	@Override
 	public void readData(DataInputStream data) throws IOException {
 		this.x = data.readInt();
 		this.y = data.readInt();
@@ -41,6 +42,7 @@ public class PacketTileUpdate extends ModdedPacket {
 		this.player = data.readUTF();
 	}
 
+	@Override
 	public void execute(NetworkManager manager, Player player) {
 		// TODO: Stuff here
 	}

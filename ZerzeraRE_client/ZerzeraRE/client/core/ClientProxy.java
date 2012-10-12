@@ -2,12 +2,10 @@ package ZerzeraRE.client.core;
 
 import net.minecraftforge.client.MinecraftForgeClient;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
 import ZerzeraRE.client.render.RenderREbench;
 import ZerzeraRE.common.lib.DefaultProps;
-import ZerzeraRE.common.tile.TileREbench;
 import ZerzeraRE.common.core.CommonProxy;
 
 public class ClientProxy extends CommonProxy {

@@ -10,7 +10,6 @@ import net.minecraft.src.Tessellator;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
 import ZerzeraRE.common.ZerzeraRE;
-import ZerzeraRE.common.lib.DefaultProps;
 
 public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderingHandler {
 	protected static int     RenderID = 0;
@@ -26,7 +25,7 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 		Tessellator tessellator = Tessellator.instance;
 		
 		// -- Render for the inventory bar
-		this.renderForInv = true;
+		ModdedRenderer.renderForInv = true;
 		// -- Top
 		tessellator.startDrawingQuads();
 		tessellator.setNormal(0.0F, 1.0F, 0.0F);
@@ -64,14 +63,14 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 		this.renderBottomFace(block, 0.0D, 0.0D, 0.0D, block.getBlockTextureFromSide(0));
 		tessellator.draw();
 
-		this.renderForInv = false;
+		ModdedRenderer.renderForInv = false;
 		
 	}
 
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
 		this.blockAccess = world;
-		this.hiResSide   = world.getBlockMetadata(x, y, z);
+		ModdedRenderer.hiResSide   = world.getBlockMetadata(x, y, z);
 		
 		super.renderStandardBlock(block, x, y, z);
 		
@@ -88,13 +87,13 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         int offsetU = (obt & 15) << 4;
         int offsetV = obt & 240;
         
-        double textureSize = ( (this.hiResSide == 0 && this.RenderHiRes == true && this.renderForInv == false) || this.ForceHiResRender ? 64.0D : 16.0D );
+        double textureSize = ( (ModdedRenderer.hiResSide == 0 && ModdedRenderer.RenderHiRes == true && ModdedRenderer.renderForInv == false) || ModdedRenderer.ForceHiResRender ? 64.0D : 16.0D );
         
-        if(this.hiResSide == 1 && this.renderForInv == false) // Rotate side 180 so texture faces to the front
+        if(ModdedRenderer.hiResSide == 1 && ModdedRenderer.renderForInv == false) // Rotate side 180 so texture faces to the front
         {
         	this.uvRotateEast = 3;
         }
-        if(this.hiResSide == 3 && this.renderForInv == false) // Rotate side 180 so texture faces to the front
+        if(ModdedRenderer.hiResSide == 3 && ModdedRenderer.renderForInv == false) // Rotate side 180 so texture faces to the front
         {
         	this.uvRotateEast = 0;
         }
@@ -106,10 +105,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         float safetyMin = 0.0F;
         float safetyMax = (float) (textureSize - 0.01D);
 
-		double minUvX = ( (double) offsetU                 + block.minX * textureSize)         / 256.0D;
-        double maxUvX = ( (double) offsetU                 + block.maxX * textureSize - 0.01D) / 256.0D;
-        double maxUvY = ( (double) (offsetV + textureSize) - block.maxY * textureSize)         / 256.0D;
-        double minUvY = ( (double) (offsetV + textureSize) - block.minY * textureSize - 0.01D) / 256.0D;
+		double minUvX = ( offsetU                 + block.minX * textureSize)         / 256.0D;
+        double maxUvX = ( offsetU                 + block.maxX * textureSize - 0.01D) / 256.0D;
+        double maxUvY = ( offsetV + textureSize - block.maxY * textureSize)         / 256.0D;
+        double minUvY = ( offsetV + textureSize - block.minY * textureSize - 0.01D) / 256.0D;
         double tMinUvX;
 
         if (this.flipTexture)
@@ -121,14 +120,14 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         
 		if (block.minX < 0.0D || block.maxX > 1.0D)
         {
-            minUvX = (double)(((float)offsetU + safetyMin) / 256.0F);
-            maxUvX = (double)(((float)offsetU + safetyMax) / 256.0F);
+            minUvX = (offsetU + safetyMin) / 256.0F;
+            maxUvX = (offsetU + safetyMax) / 256.0F;
         }
 
         if (block.minY < 0.0D || block.maxY > 1.0D)
         {
-            maxUvY = (double)(((float)offsetV + safetyMin) / 256.0F);
-            minUvY = (double)(((float)offsetV + safetyMax) / 256.0F);
+            maxUvY = (offsetV + safetyMin) / 256.0F;
+            minUvY = (offsetV + safetyMax) / 256.0F;
         }
 
         tMinUvX = maxUvX;
@@ -138,10 +137,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
         if (this.uvRotateEast == 2)
         {
-            minUvX = ( (double) offsetU                 + block.minY * textureSize) / 256.0D;
-            maxUvY = ( (double) (offsetV + textureSize) - block.minX * textureSize) / 256.0D;
-            maxUvX = ( (double) offsetU                 + block.maxY * textureSize) / 256.0D;
-            minUvY = ( (double) (offsetV + textureSize) - block.maxX * textureSize) / 256.0D;
+            minUvX = ( offsetU                 + block.minY * textureSize) / 256.0D;
+            maxUvY = ( offsetV + textureSize - block.minX * textureSize) / 256.0D;
+            maxUvX = ( offsetU                 + block.maxY * textureSize) / 256.0D;
+            minUvY = ( offsetV + textureSize - block.maxX * textureSize) / 256.0D;
             tMaxUvY = maxUvY;
             tMinUvY = minUvY;
             tMinUvX = minUvX;
@@ -151,10 +150,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateEast == 1)
         {
-            minUvX = ( (double) (offsetU + textureSize) - block.maxY * textureSize) / 256.0D;
-            maxUvY = ( (double) offsetV                 + block.maxX * textureSize) / 256.0D;
-            maxUvX = ( (double) (offsetU + textureSize) - block.minY * textureSize) / 256.0D;
-            minUvY = ( (double) offsetV                 + block.minX * textureSize) / 256.0D;
+            minUvX = ( offsetU + textureSize - block.maxY * textureSize) / 256.0D;
+            maxUvY = ( offsetV                 + block.maxX * textureSize) / 256.0D;
+            maxUvX = ( offsetU + textureSize - block.minY * textureSize) / 256.0D;
+            minUvY = ( offsetV                 + block.minX * textureSize) / 256.0D;
             tMinUvX = maxUvX;
             ttMinUvX = minUvX;
             minUvX = maxUvX;
@@ -164,10 +163,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateEast == 3)
         {
-            minUvX = ((double)(offsetU + textureSize) - block.minX * textureSize)         / 256.0D;
-            maxUvX = ((double)(offsetU + textureSize) - block.maxX * textureSize - 0.01D) / 256.0D;
-            maxUvY = ((double)offsetV                 + block.maxY * textureSize)         / 256.0D;
-            minUvY = ((double)offsetV                 + block.minY * textureSize - 0.01D) / 256.0D;
+            minUvX = (offsetU + textureSize - block.minX * textureSize)         / 256.0D;
+            maxUvX = (offsetU + textureSize - block.maxX * textureSize - 0.01D) / 256.0D;
+            maxUvY = (offsetV                 + block.maxY * textureSize)         / 256.0D;
+            minUvY = (offsetV                 + block.minY * textureSize - 0.01D) / 256.0D;
             tMinUvX = maxUvX;
             ttMinUvX = minUvX;
             tMaxUvY = maxUvY;
@@ -207,9 +206,9 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
 	}
 	public void renderEastFace(Block block, double x, double y, double z, int obt, boolean HiRes) {
-		this.ForceHiResRender = true;
+		ModdedRenderer.ForceHiResRender = true;
 		this.renderEastFace(block, x, y, z, obt);
-		this.ForceHiResRender = false;
+		ModdedRenderer.ForceHiResRender = false;
 	}
 	// -- Ingame this is the North side of the block ( f = 2 )
 	@Override
@@ -221,13 +220,13 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         int offsetU = (obt & 15) << 4;
         int offsetV = obt & 240;
         
-        double textureSize = ( (this.hiResSide == 2 && this.RenderHiRes == true && this.renderForInv == false) || this.ForceHiResRender ? 64.0D : 16.0D );
+        double textureSize = ( (ModdedRenderer.hiResSide == 2 && ModdedRenderer.RenderHiRes == true && ModdedRenderer.renderForInv == false) || ModdedRenderer.ForceHiResRender ? 64.0D : 16.0D );
         
-        if(this.hiResSide == 3 && this.renderForInv == false) // Rotate texture so side face to the front
+        if(ModdedRenderer.hiResSide == 3 && ModdedRenderer.renderForInv == false) // Rotate texture so side face to the front
         {
         	this.uvRotateWest = 3;
         }
-        else if(this.hiResSide == 1 && this.renderForInv == false) // Rotate texture so side face to the front
+        else if(ModdedRenderer.hiResSide == 1 && ModdedRenderer.renderForInv == false) // Rotate texture so side face to the front
         {
         	this.uvRotateWest = 0;
         }
@@ -239,10 +238,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         float safetyMin = 0.0F;
         float safetyMax = (float) (textureSize - 0.01D);
         
-		double minUvX = ( (double) offsetU                 + block.minX * textureSize)         / 256.0D;
-        double maxUvX = ( (double) offsetU                 + block.maxX * textureSize - 0.01D) / 256.0D;
-        double maxUvY = ( (double) (offsetV + textureSize) - block.maxY * textureSize)         / 256.0D;
-        double minUvY = ( (double) (offsetV + textureSize) - block.minY * textureSize - 0.01D) / 256.0D;
+		double minUvX = ( offsetU                 + block.minX * textureSize)         / 256.0D;
+        double maxUvX = ( offsetU                 + block.maxX * textureSize - 0.01D) / 256.0D;
+        double maxUvY = ( offsetV + textureSize - block.maxY * textureSize)         / 256.0D;
+        double minUvY = ( offsetV + textureSize - block.minY * textureSize - 0.01D) / 256.0D;
         double tMinUvX;
 
         if (this.flipTexture)
@@ -254,14 +253,14 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
 		if (block.minX < 0.0D || block.maxX > 1.0D)
         {
-            minUvX = (double)(((float)offsetU + safetyMin) / 256.0F);
-            maxUvX = (double)(((float)offsetU + safetyMax) / 256.0F);
+            minUvX = (offsetU + safetyMin) / 256.0F;
+            maxUvX = (offsetU + safetyMax) / 256.0F;
         }
 
         if (block.minY < 0.0D || block.maxY > 1.0D)
         {
-            maxUvY = (double)(((float)offsetV + safetyMin) / 256.0F);
-            minUvY = (double)(((float)offsetV + safetyMax) / 256.0F);
+            maxUvY = (offsetV + safetyMin) / 256.0F;
+            minUvY = (offsetV + safetyMax) / 256.0F;
         }
 
         tMinUvX = maxUvX;
@@ -271,10 +270,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
         if (this.uvRotateWest == 1)
         {
-            minUvX = ( (double) offsetU                 + block.minY * textureSize) / 256.0D;
-            minUvY = ( (double) (offsetV + textureSize) - block.minX * textureSize) / 256.0D;
-            maxUvX = ( (double) offsetU                 + block.maxY * textureSize) / 256.0D;
-            maxUvY = ( (double) (offsetV + textureSize) - block.maxX * textureSize) / 256.0D;
+            minUvX = ( offsetU                 + block.minY * textureSize) / 256.0D;
+            minUvY = ( offsetV + textureSize - block.minX * textureSize) / 256.0D;
+            maxUvX = ( offsetU                 + block.maxY * textureSize) / 256.0D;
+            maxUvY = ( offsetV + textureSize - block.maxX * textureSize) / 256.0D;
             tMaxUvX = maxUvY;
             tMinUvY = minUvY;
             tMinUvX = minUvX;
@@ -284,10 +283,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateWest == 2)
         {
-            minUvX = ( (double) (offsetU + textureSize) - block.maxY * textureSize) / 256.0D;
-            maxUvY = ( (double) offsetV                 + block.minX * textureSize) / 256.0D;
-            maxUvX = ( (double) (offsetU + textureSize) - block.minY * textureSize) / 256.0D;
-            minUvY = ( (double) offsetV                 + block.maxX * textureSize) / 256.0D;
+            minUvX = ( offsetU + textureSize - block.maxY * textureSize) / 256.0D;
+            maxUvY = ( offsetV                 + block.minX * textureSize) / 256.0D;
+            maxUvX = ( offsetU + textureSize - block.minY * textureSize) / 256.0D;
+            minUvY = ( offsetV                 + block.maxX * textureSize) / 256.0D;
             tMinUvX = maxUvX;
             ttMinUvX = minUvX;
             minUvX = maxUvX;
@@ -297,10 +296,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateWest == 3)
         {
-            minUvX = ((double)(offsetU + textureSize) - block.minX * textureSize) / 256.0D;
-            maxUvX = ((double)(offsetU + textureSize) - block.maxX * textureSize - 0.01D) / 256.0D;
-            maxUvY = ((double)offsetV                 + block.maxY * textureSize) / 256.0D;
-            minUvY = ((double)offsetV                 + block.minY * textureSize - 0.01D) / 256.0D;
+            minUvX = (offsetU + textureSize - block.minX * textureSize) / 256.0D;
+            maxUvX = (offsetU + textureSize - block.maxX * textureSize - 0.01D) / 256.0D;
+            maxUvY = (offsetV                 + block.maxY * textureSize) / 256.0D;
+            minUvY = (offsetV                 + block.minY * textureSize - 0.01D) / 256.0D;
             tMinUvX = maxUvX;
             ttMinUvX = minUvX;
             tMaxUvX = maxUvY;
@@ -340,9 +339,9 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
 	}
 	public void renderWestFace(Block block, double x, double y, double z, int obt, boolean HiRes) {
-		this.ForceHiResRender = true;
+		ModdedRenderer.ForceHiResRender = true;
 		this.renderWestFace(block, x, y, z, obt);
-		this.ForceHiResRender = false;
+		ModdedRenderer.ForceHiResRender = false;
 	}
 	// -- Ingame this is the West side of the block ( f = 1 )
 	@Override
@@ -355,12 +354,12 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         int offsetU = (obt & 15) << 4;
         int offsetV = obt & 240;
         
-        double textureSize = ( (this.hiResSide == 1 && this.RenderHiRes == true && this.renderForInv == false) || this.ForceHiResRender ? 64.0D : 16.0D );
-        if(this.hiResSide == 2 && this.renderForInv == false) // Rotate texture so side face to the front
+        double textureSize = ( (ModdedRenderer.hiResSide == 1 && ModdedRenderer.RenderHiRes == true && ModdedRenderer.renderForInv == false) || ModdedRenderer.ForceHiResRender ? 64.0D : 16.0D );
+        if(ModdedRenderer.hiResSide == 2 && ModdedRenderer.renderForInv == false) // Rotate texture so side face to the front
         {
         	this.uvRotateSouth = 3;
         }
-        else if(this.hiResSide == 0 && this.renderForInv == false) // Rotate texture so side face to the front
+        else if(ModdedRenderer.hiResSide == 0 && ModdedRenderer.renderForInv == false) // Rotate texture so side face to the front
         {
         	this.uvRotateSouth = 0;
         }
@@ -372,10 +371,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         float safetyMax = (float) (textureSize - 0.01D);
 		float safetyMin = 0.0F;
 		
-		double minUvZ = ( (double) offsetU                 + block.minZ * textureSize)         / 256.0D;
-        double maxUvZ = ( (double) offsetU                 + block.maxZ * textureSize - 0.01D) / 256.0D;
-        double minUvY = ( (double) (offsetV + textureSize) - block.maxY * textureSize)         / 256.0D;
-        double maxUvY = ( (double) (offsetV + textureSize) - block.minY * textureSize - 0.01D) / 256.0D;
+		double minUvZ = ( offsetU                 + block.minZ * textureSize)         / 256.0D;
+        double maxUvZ = ( offsetU                 + block.maxZ * textureSize - 0.01D) / 256.0D;
+        double minUvY = ( offsetV + textureSize - block.maxY * textureSize)         / 256.0D;
+        double maxUvY = ( offsetV + textureSize - block.minY * textureSize - 0.01D) / 256.0D;
         double tMinUvZ;
 
         if (this.flipTexture)
@@ -387,14 +386,14 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
 		if (block.minZ < 0.0D || block.maxZ > 1.0D)
         {
-            minUvZ = (double)(((float)offsetU + safetyMin) / 256.0F);
-            maxUvZ = (double)(((float)offsetU + safetyMax) / 256.0F);
+            minUvZ = (offsetU + safetyMin) / 256.0F;
+            maxUvZ = (offsetU + safetyMax) / 256.0F;
         }
 
         if (block.minY < 0.0D || block.maxY > 1.0D)
         {
-            minUvY = (double)(((float)offsetV + safetyMin) / 256.0F);
-            maxUvY = (double)(((float)offsetV + safetyMax) / 256.0F);
+            minUvY = (offsetV + safetyMin) / 256.0F;
+            maxUvY = (offsetV + safetyMax) / 256.0F;
         }
 
         tMinUvZ = maxUvZ;
@@ -404,10 +403,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
         if (this.uvRotateSouth == 2)
         {
-            minUvZ = ( (double) offsetU                 + block.minY * textureSize) / 256.0D;
-            minUvY = ( (double) (offsetV + textureSize) - block.minZ * textureSize) / 256.0D;
-            maxUvZ = ( (double) offsetU                 + block.maxY * textureSize) / 256.0D;
-            maxUvY = ( (double) (offsetV + textureSize) - block.maxZ * textureSize) / 256.0D;
+            minUvZ = ( offsetU                 + block.minY * textureSize) / 256.0D;
+            minUvY = ( offsetV + textureSize - block.minZ * textureSize) / 256.0D;
+            maxUvZ = ( offsetU                 + block.maxY * textureSize) / 256.0D;
+            maxUvY = ( offsetV + textureSize - block.maxZ * textureSize) / 256.0D;
             tMinUvY = minUvY;
             tMaxUvY = maxUvY;
             tMinUvZ = minUvZ;
@@ -417,10 +416,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateSouth == 1)
         {
-            minUvZ = ( (double) (offsetU + textureSize) - block.maxY * textureSize) / 256.0D;
-            minUvY = ( (double) offsetV                 + block.maxZ * textureSize) / 256.0D;
-            maxUvZ = ( (double) (offsetU + textureSize) - block.minY * textureSize) / 256.0D;
-            maxUvY = ( (double) offsetV                 + block.minZ * textureSize) / 256.0D;
+            minUvZ = ( offsetU + textureSize - block.maxY * textureSize) / 256.0D;
+            minUvY = ( offsetV                 + block.maxZ * textureSize) / 256.0D;
+            maxUvZ = ( offsetU + textureSize - block.minY * textureSize) / 256.0D;
+            maxUvY = ( offsetV                 + block.minZ * textureSize) / 256.0D;
             tMinUvZ = maxUvZ;
             tMaxUvZ = minUvZ;
             minUvZ = maxUvZ;
@@ -430,10 +429,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateSouth == 3)
         {
-            minUvZ = ( (double) (offsetU + textureSize) - block.minZ * textureSize)         / 256.0D;
-            maxUvZ = ( (double) (offsetU + textureSize) - block.maxZ * textureSize - 0.01D) / 256.0D;
-            minUvY = ( (double) offsetV                 + block.maxY * textureSize)         / 256.0D;
-            maxUvY = ( (double) offsetV                 + block.minY * textureSize - 0.01D) / 256.0D;
+            minUvZ = ( offsetU + textureSize - block.minZ * textureSize)         / 256.0D;
+            maxUvZ = ( offsetU + textureSize - block.maxZ * textureSize - 0.01D) / 256.0D;
+            minUvY = ( offsetV                 + block.maxY * textureSize)         / 256.0D;
+            maxUvY = ( offsetV                 + block.minY * textureSize - 0.01D) / 256.0D;
             
             tMinUvZ = maxUvZ;
             tMaxUvZ = minUvZ;
@@ -474,9 +473,9 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
     }
 	public void renderSouthFace(Block block, double x, double y, double z, int obt, boolean HiRes) {
-		this.ForceHiResRender = true;
+		ModdedRenderer.ForceHiResRender = true;
 		this.renderSouthFace(block, x, y, z, obt);
-		this.ForceHiResRender = false;
+		ModdedRenderer.ForceHiResRender = false;
 	}
 	// -- Ingame this is the East side of the block ( f = 3 )
 	@Override
@@ -488,13 +487,13 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         int offsetU = (obt & 15) << 4;
         int offsetV = obt & 240;
         
-        double textureSize = ( (this.hiResSide == 3 && this.RenderHiRes == true && this.renderForInv == false) || this.ForceHiResRender ? 64.0D : 16.0D );
+        double textureSize = ( (ModdedRenderer.hiResSide == 3 && ModdedRenderer.RenderHiRes == true && ModdedRenderer.renderForInv == false) || ModdedRenderer.ForceHiResRender ? 64.0D : 16.0D );
         
-        if(this.hiResSide == 2 && this.renderForInv == false) // Rotate texture so side face to the front
+        if(ModdedRenderer.hiResSide == 2 && ModdedRenderer.renderForInv == false) // Rotate texture so side face to the front
         {
         	this.uvRotateNorth = 0;
         }
-        else if(this.hiResSide == 0 && this.renderForInv == false) // Rotate texture so side face to the front
+        else if(ModdedRenderer.hiResSide == 0 && ModdedRenderer.renderForInv == false) // Rotate texture so side face to the front
         {
         	this.uvRotateNorth = 3;
         }
@@ -506,10 +505,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         float safetyMin = 0.0F;
         float safetyMax = (float) (textureSize - 0.01D);
         
-		double minUvZ = ( (double) offsetU                 + block.minZ * textureSize)         / 256.0D;
-        double maxUvZ = ( (double) offsetU                 + block.maxZ * textureSize - 0.01D) / 256.0D;
-        double maxUvY = ( (double) (offsetV + textureSize) - block.maxY * textureSize)         / 256.0D;
-        double minUvY = ( (double) (offsetV + textureSize) - block.minY * textureSize - 0.01D) / 256.0D;
+		double minUvZ = ( offsetU                 + block.minZ * textureSize)         / 256.0D;
+        double maxUvZ = ( offsetU                 + block.maxZ * textureSize - 0.01D) / 256.0D;
+        double maxUvY = ( offsetV + textureSize - block.maxY * textureSize)         / 256.0D;
+        double minUvY = ( offsetV + textureSize - block.minY * textureSize - 0.01D) / 256.0D;
         
         double tMinUvZ;
 
@@ -522,14 +521,14 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
 		if (block.minZ < 0.0D || block.maxZ > 1.0D)
         {
-            minUvZ = (double)(((float)offsetU + safetyMin) / 256.0F);
-            maxUvZ = (double)(((float)offsetU + safetyMax) / 256.0F);
+            minUvZ = (offsetU + safetyMin) / 256.0F;
+            maxUvZ = (offsetU + safetyMax) / 256.0F;
         }
 
         if (block.minY < 0.0D || block.maxY > 1.0D)
         {
-            maxUvY = (double)(((float)offsetV + safetyMin) / 256.0F);
-            minUvY = (double)(((float)offsetV + safetyMax) / 256.0F);
+            maxUvY = (offsetV + safetyMin) / 256.0F;
+            minUvY = (offsetV + safetyMax) / 256.0F;
         }
 
         tMinUvZ = maxUvZ;
@@ -539,10 +538,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
         if (this.uvRotateNorth == 1)
         {
-            minUvZ = ( (double) offsetU                 + block.minY * textureSize) / 256.0D;
-            maxUvY = ( (double) (offsetV + textureSize) - block.maxZ * textureSize) / 256.0D;
-            maxUvZ = ( (double) offsetU                 + block.maxY * textureSize) / 256.0D;
-            minUvY = ( (double) (offsetV + textureSize) - block.minZ * textureSize) / 256.0D;
+            minUvZ = ( offsetU                 + block.minY * textureSize) / 256.0D;
+            maxUvY = ( offsetV + textureSize - block.maxZ * textureSize) / 256.0D;
+            maxUvZ = ( offsetU                 + block.maxY * textureSize) / 256.0D;
+            minUvY = ( offsetV + textureSize - block.minZ * textureSize) / 256.0D;
             tMaxUvY = maxUvY;
             tMinUvY = minUvY;
             tMinUvZ = minUvZ;
@@ -552,10 +551,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateNorth == 2)
         {
-            minUvZ = ( (double) (offsetU + textureSize) - block.maxY * textureSize) / 256.0D;
-            maxUvY = ( (double) offsetV                 + block.minZ * textureSize) / 256.0D;
-            maxUvZ = ( (double) (offsetU + textureSize) - block.minY * textureSize) / 256.0D;
-            minUvY = ( (double) offsetV                 + block.maxZ * textureSize) / 256.0D;
+            minUvZ = ( offsetU + textureSize - block.maxY * textureSize) / 256.0D;
+            maxUvY = ( offsetV                 + block.minZ * textureSize) / 256.0D;
+            maxUvZ = ( offsetU + textureSize - block.minY * textureSize) / 256.0D;
+            minUvY = ( offsetV                 + block.maxZ * textureSize) / 256.0D;
             
             tMinUvZ = maxUvZ;
             ttMinUvZ = minUvZ;
@@ -566,10 +565,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateNorth == 3)
         {
-            minUvZ = ( (double) (offsetU + textureSize) - block.minZ * textureSize)         / 256.0D;
-            maxUvZ = ( (double) (offsetU + textureSize) - block.maxZ * textureSize - 0.01D) / 256.0D;
-            maxUvY = ( (double) offsetV                 + block.maxY * textureSize)         / 256.0D;
-            minUvY = ( (double) offsetV                 + block.minY * textureSize - 0.01D) / 256.0D;
+            minUvZ = ( offsetU + textureSize - block.minZ * textureSize)         / 256.0D;
+            maxUvZ = ( offsetU + textureSize - block.maxZ * textureSize - 0.01D) / 256.0D;
+            maxUvY = ( offsetV                 + block.maxY * textureSize)         / 256.0D;
+            minUvY = ( offsetV                 + block.minY * textureSize - 0.01D) / 256.0D;
             
             tMinUvZ = maxUvZ;
             ttMinUvZ = minUvZ;
@@ -610,9 +609,9 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
     }
 	public void renderNorthFace(Block block, double x, double y, double z, int obt, boolean HiRes) {
-		this.ForceHiResRender = true;
+		ModdedRenderer.ForceHiResRender = true;
 		renderNorthFace(block, x, y, z, obt);
-		this.ForceHiResRender = false;
+		ModdedRenderer.ForceHiResRender = false;
 	}
 	
 	@Override
@@ -623,9 +622,9 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 		// faceDir = 2 - North
 		// faceDir = 3 - East
 		
-		if(this.RenderHiRes)
+		if(ModdedRenderer.RenderHiRes)
 		{
-			switch( this.hiResSide )
+			switch( ModdedRenderer.hiResSide )
 			{
 				case 0: this.uvRotateTop = 0; break;
 				case 1: this.uvRotateTop = 1; break;
@@ -644,21 +643,21 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 		float safetyMax = (float) (textureSize - 0.01D);
 		float safetyMin = 0.0F;
         
-        double minUvX = ( (double) offsetX + block.minX * textureSize ) 		 / 256.0D;
-        double maxUvX = ( (double) offsetX + block.maxX * textureSize - 0.01D) / 256.0D;
-        double minUvZ = ( (double) offsetZ + block.minZ * textureSize ) 		 / 256.0D;
-        double maxUvZ = ( (double) offsetZ + block.maxZ * textureSize - 0.01D) / 256.0D;
+        double minUvX = ( offsetX + block.minX * textureSize ) 		 / 256.0D;
+        double maxUvX = ( offsetX + block.maxX * textureSize - 0.01D) / 256.0D;
+        double minUvZ = ( offsetZ + block.minZ * textureSize ) 		 / 256.0D;
+        double maxUvZ = ( offsetZ + block.maxZ * textureSize - 0.01D) / 256.0D;
         
         if (block.minX < 0.0D || block.maxX > 1.0D)
         {
-            minUvX = (double) ( ( (float) offsetX + safetyMin) / 256.0F);
-            maxUvX = (double) ( ( (float) offsetX + safetyMax) / 256.0F);
+            minUvX = ( offsetX + safetyMin) / 256.0F;
+            maxUvX = ( offsetX + safetyMax) / 256.0F;
         }
 
         if (block.minZ < 0.0D || block.maxZ > 1.0D)
         {
-            minUvZ = (double) ( ( (float) offsetZ + safetyMin ) / 256.0F);
-            maxUvZ = (double) ( ( (float) offsetZ + safetyMax ) / 256.0F);
+            minUvZ = ( offsetZ + safetyMin ) / 256.0F;
+            maxUvZ = ( offsetZ + safetyMax ) / 256.0F;
         }
 
         double tMaxUvX = maxUvX;
@@ -668,10 +667,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
         if (this.uvRotateTop == 1)
         {
-            minUvX = ( (double) offsetX + block.minZ * textureSize) / 256.0D;
-            minUvZ = ( (double) (offsetZ + (int) textureSize ) - block.maxX * textureSize) / 256.0D;
-            maxUvX = ( (double) offsetX + block.maxZ * textureSize) / 256.0D;
-            maxUvZ = ( (double) (offsetZ + (int) textureSize ) - block.minX * textureSize) / 256.0D;
+            minUvX = ( offsetX + block.minZ * textureSize) / 256.0D;
+            minUvZ = ( offsetZ + (int) textureSize - block.maxX * textureSize) / 256.0D;
+            maxUvX = ( offsetX + block.maxZ * textureSize) / 256.0D;
+            maxUvZ = ( offsetZ + (int) textureSize - block.minX * textureSize) / 256.0D;
             
             tMinUvZ = minUvZ;
             tMaxUvZ = maxUvZ;
@@ -683,10 +682,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateTop == 2)
         {
-            minUvX = ( (double) (offsetX + (int) textureSize ) - block.maxZ * textureSize) / 256.0D;
-            minUvZ = ( (double) offsetZ + block.minX * textureSize) / 256.0D;
-            maxUvX = ( (double) (offsetX + (int) textureSize ) - block.minZ * textureSize) / 256.0D;
-            maxUvZ = ( (double) offsetZ + block.maxX * textureSize) / 256.0D;
+            minUvX = ( offsetX + (int) textureSize - block.maxZ * textureSize) / 256.0D;
+            minUvZ = ( offsetZ + block.minX * textureSize) / 256.0D;
+            maxUvX = ( offsetX + (int) textureSize - block.minZ * textureSize) / 256.0D;
+            maxUvZ = ( offsetZ + block.maxX * textureSize) / 256.0D;
             tMaxUvX = maxUvX;
             tMinUvX = minUvX;
             minUvX  = maxUvX;
@@ -696,10 +695,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateTop == 3)
         {
-            minUvX = ((double)(offsetX + (int) textureSize) - block.minX * textureSize) / 256.0D;
-            maxUvX = ((double)(offsetX + (int) textureSize) - block.maxX * textureSize - 0.01D) / 256.0D;
-            minUvZ = ((double)(offsetZ + (int) textureSize) - block.minZ * textureSize) / 256.0D;
-            maxUvZ = ((double)(offsetZ + (int) textureSize) - block.maxZ * textureSize - 0.01D) / 256.0D;
+            minUvX = (offsetX + (int) textureSize - block.minX * textureSize) / 256.0D;
+            maxUvX = (offsetX + (int) textureSize - block.maxX * textureSize - 0.01D) / 256.0D;
+            minUvZ = (offsetZ + (int) textureSize - block.minZ * textureSize) / 256.0D;
+            maxUvZ = (offsetZ + (int) textureSize - block.maxZ * textureSize - 0.01D) / 256.0D;
             tMaxUvX = maxUvX;
             tMinUvX = minUvX;
             tMinUvZ = minUvZ;
@@ -748,7 +747,7 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 		// faceDir = 2 - North
 		// faceDir = 3 - East
 		
-		switch( this.hiResSide )
+		switch( ModdedRenderer.hiResSide )
 		{
 			case 0: this.uvRotateBottom = 0; break;
 			case 1: this.uvRotateBottom = 2; break;
@@ -766,22 +765,22 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         float safetyMax = (float) (textureSize - 0.01D);
         float safetyMin = 0.0F;
         
-		double minUvX = ( (double) offsetU + block.minX * textureSize)         / 256.0D;
-        double maxUvX = ( (double) offsetU + block.maxX * textureSize - 0.01D) / 256.0D;
-        double minUvZ = ( (double) offsetV + block.minZ * textureSize)         / 256.0D;
-        double maxUvZ = ( (double) offsetV + block.maxZ * textureSize - 0.01D) / 256.0D;
+		double minUvX = ( offsetU + block.minX * textureSize)         / 256.0D;
+        double maxUvX = ( offsetU + block.maxX * textureSize - 0.01D) / 256.0D;
+        double minUvZ = ( offsetV + block.minZ * textureSize)         / 256.0D;
+        double maxUvZ = ( offsetV + block.maxZ * textureSize - 0.01D) / 256.0D;
 
 		
 		if (block.minX < 0.0D || block.maxX > 1.0D)
         {
-            minUvX = (double)(((float)offsetU + safetyMin) / 256.0F);
-            maxUvX = (double)(((float)offsetU + safetyMax) / 256.0F);
+            minUvX = (offsetU + safetyMin) / 256.0F;
+            maxUvX = (offsetU + safetyMax) / 256.0F;
         }
 
         if (block.minZ < 0.0D || block.maxZ > 1.0D)
         {
-            minUvZ = (double)(((float)offsetV + safetyMin) / 256.0F);
-            maxUvZ = (double)(((float)offsetV + safetyMax) / 256.0F);
+            minUvZ = (offsetV + safetyMin) / 256.0F;
+            maxUvZ = (offsetV + safetyMax) / 256.0F;
         }
 
         double tMaxUvX = maxUvX;
@@ -791,10 +790,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
 
         if (this.uvRotateBottom == 2)
         {
-            minUvX = ( (double) offsetU                 + block.minZ * textureSize) / 256.0D;
-            minUvZ = ( (double) (offsetV + textureSize) - block.maxX * textureSize) / 256.0D;
-            maxUvX = ( (double) offsetU                 + block.maxZ * textureSize) / 256.0D;
-            maxUvZ = ( (double) (offsetV + textureSize) - block.minX * textureSize) / 256.0D;
+            minUvX = ( offsetU                 + block.minZ * textureSize) / 256.0D;
+            minUvZ = ( offsetV + textureSize - block.maxX * textureSize) / 256.0D;
+            maxUvX = ( offsetU                 + block.maxZ * textureSize) / 256.0D;
+            maxUvZ = ( offsetV + textureSize - block.minX * textureSize) / 256.0D;
             tMinUvZ = minUvZ;
             tMaxUvZ = maxUvZ;
             tMaxUvX = minUvX;
@@ -804,10 +803,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateBottom == 1)
         {
-            minUvX = ( (double) (offsetU + textureSize) - block.maxZ * textureSize) / 256.0D;
-            minUvZ = ( (double) offsetV                 + block.minX * textureSize) / 256.0D;
-            maxUvX = ( (double) (offsetU + textureSize) - block.minZ * textureSize) / 256.0D;
-            maxUvZ = ( (double) offsetV                 + block.maxX * textureSize) / 256.0D;
+            minUvX = ( offsetU + textureSize - block.maxZ * textureSize) / 256.0D;
+            minUvZ = ( offsetV                 + block.minX * textureSize) / 256.0D;
+            maxUvX = ( offsetU + textureSize - block.minZ * textureSize) / 256.0D;
+            maxUvZ = ( offsetV                 + block.maxX * textureSize) / 256.0D;
             tMaxUvX = maxUvX;
             tMinUvX = minUvX;
             minUvX = maxUvX;
@@ -817,10 +816,10 @@ public class ModdedRenderer extends RenderBlocks implements ISimpleBlockRenderin
         }
         else if (this.uvRotateBottom == 3)
         {
-            minUvX = ( (double) (offsetU + textureSize) - block.minX * textureSize)         / 256.0D;
-            maxUvX = ( (double) (offsetU + textureSize) - block.maxX * textureSize - 0.01D) / 256.0D;
-            minUvZ = ( (double) (offsetV + textureSize) - block.minZ * textureSize)         / 256.0D;
-            maxUvZ = ( (double) (offsetV + textureSize) - block.maxZ * textureSize - 0.01D) / 256.0D;
+            minUvX = ( offsetU + textureSize - block.minX * textureSize)         / 256.0D;
+            maxUvX = ( offsetU + textureSize - block.maxX * textureSize - 0.01D) / 256.0D;
+            minUvZ = ( offsetV + textureSize - block.minZ * textureSize)         / 256.0D;
+            maxUvZ = ( offsetV + textureSize - block.maxZ * textureSize - 0.01D) / 256.0D;
             tMaxUvX = maxUvX;
             tMinUvX = minUvX;
             tMinUvZ = minUvZ;
